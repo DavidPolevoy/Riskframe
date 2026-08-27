@@ -7,4 +7,11 @@ describe('Rubber Duck app shell', () => {
     render(<App />);
     expect(screen.getByRole('heading', { name: 'Rubber Duck' })).toBeInTheDocument();
   });
+
+  it('shows the study canvas, three hint tokens, and a spend control', () => {
+    render(<App />);
+    expect(screen.getByText('Two Sum')).toBeInTheDocument();
+    expect(screen.getByText(/3 hint tokens/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /spend hint/i })).toBeInTheDocument();
+  });
 });
