@@ -14,6 +14,7 @@ export type Action =
   | { type: 'moveStep'; stepId: string; direction: 'up' | 'down' }
   | { type: 'setFocus'; stepId: string | null }
   | { type: 'spendHint' }
+  | { type: 'resetSession' }
   | { type: 'askQuestion'; stepId: string; text: string }
   | { type: 'placeFlag'; stepId: string }
   | { type: 'awardCheck'; stepId: string };

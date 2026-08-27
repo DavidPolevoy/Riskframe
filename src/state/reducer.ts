@@ -13,6 +13,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'moveStep': { const i = state.steps.findIndex((s) => s.id === action.stepId); const j = action.direction === 'up' ? i - 1 : i + 1; if (i < 0 || j < 0 || j >= state.steps.length) return state; const steps = [...state.steps]; [steps[i], steps[j]] = [steps[j], steps[i]]; return { ...state, steps }; }
     case 'setFocus': return { ...state, focusId: action.stepId };
     case 'spendHint': return state.hintTokens <= 0 ? state : { ...state, hintTokens: state.hintTokens - 1, unlockedTier: Math.min(3, state.unlockedTier + 1) };
+    case 'resetSession': return createInitialState(state.problem);
     case 'askQuestion': return state.steps.some((s) => s.id === action.stepId) ? { ...state, annotations: [...state.annotations, { id: `annotation-${now()}`, stepId: action.stepId, kind: 'question', text: action.text, createdAt: now() }] } : state;
     case 'placeFlag': return state.steps.some((s) => s.id === action.stepId) ? { ...state, steps: state.steps.map((s) => s.id === action.stepId ? { ...s, status: 'flagged' } : s), annotations: [...state.annotations, { id: `annotation-${now()}`, stepId: action.stepId, kind: 'flag', text: '', createdAt: now() }] } : state;
     case 'awardCheck': return state.steps.some((s) => s.id === action.stepId) ? { ...state, steps: state.steps.map((s) => s.id === action.stepId ? { ...s, status: 'checked' } : s) } : state;

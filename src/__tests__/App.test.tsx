@@ -13,5 +13,6 @@ describe('Rubber Duck app shell', () => {
     expect(screen.getByText('Two Sum')).toBeInTheDocument();
     expect(screen.getByText(/3 hint tokens/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /spend hint/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reset session/i })).toBeInTheDocument();
   });
 });
