@@ -1,10 +1,17 @@
 import { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
-import problems from '../data/problems.json';
-import type { Action, AppState, Problem } from '../data/types';
-import { createInitialState, reducer } from './reducer';
-import { loadState, saveState } from './storage';
+import type { Action, AppState } from '../data/types';
+import { demoDecisionGraph } from '../data/demoDecisionGraph';
+import { buildStateFromSnapshot, createInitialState, reducer } from './reducer';
+import { loadState, saveState, storageKey } from './storage';
 
 const Context = createContext<{ state: AppState; dispatch: React.Dispatch<Action> } | null>(null);
-export function AppProvider({ children, problem = problems[0] as Problem }: { children: React.ReactNode; problem?: Problem }) { const [state, dispatch] = useReducer(reducer, createInitialState(problem), loadState); useEffect(() => saveState(state), [state]); return <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>; }
+function loadInitialAppState() {
+  const fallback = createInitialState();
+  const loaded = localStorage.getItem(storageKey) === null ? fallback : loadState(fallback);
+  return loaded.decision === null && loaded.cards.length === 0 && loaded.proposals.length === 0
+    ? buildStateFromSnapshot(demoDecisionGraph)
+    : loaded;
+}
+export function AppProvider({ children }: { children: React.ReactNode }) { const [state, dispatch] = useReducer(reducer, createInitialState(), loadInitialAppState); useEffect(() => saveState(state), [state]); return <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>; }
 export function useApp() { const value = useContext(Context); if (!value) throw new Error('useApp must be used within AppProvider'); return value; }
-export function useProblemList() { return useMemo(() => problems as Problem[], []); }
+export function useLensOptions() { return useMemo(() => ['personal', 'startup', 'engineering'] as const, []); }

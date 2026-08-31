@@ -1,33 +1,35 @@
-# Rubber Duck
+# Riskframe
 
-**An AI study companion that is structurally unable to give you the answer.**
+**A visual risk debugger for decisions.**
 
-Rubber Duck is a WebMCP Challenge entry for learners who want to solve problems, not paste them into an answer engine. You write the reasoning as ordered steps. The Duck can inspect your work, ask a Socratic question, and notice when you are stuck—but stronger help only becomes discoverable when you explicitly spend a hint token.
+Riskframe is a WebMCP Challenge entry for people who need to see the structure and risk profile of a decision before committing. The user states a messy decision in ChatGPT, and ChatGPT initializes a validated decision graph in the browser through WebMCP. Every initialized graph must compare the proposed change path against the status quo path, including the risks of moving forward and the risks of keeping the regular route. ChatGPT can inspect the graph, propose grounded cards and links, flag conflicts, and mark fragile paths without inventing hidden certainty.
+
+The important part: agent output is visual and reversible. Proposed cards stay as draft objects until the user accepts, parks, or rejects them. Parked ideas remain visible in a side lot and can be promoted later when new reasoning makes them relevant again.
 
 ## Why WebMCP is the point, not the plumbing
 
-Most “Socratic tutor” products promise restraint in a system prompt. Rubber Duck makes restraint observable and enforceable at the browser protocol layer. The agent’s tool surface is the pedagogy:
+Chat alone can summarize a decision. Riskframe uses WebMCP to maintain a shared spatial reasoning model that chat normally flattens:
 
-- Tier 0 tools can read the problem, read your work, observe focus/stuck signals, ask questions, flag a step, and award a defended check.
-- Spending a token mounts exactly one stronger tool live.
-- The sidebar shows the agent’s current capabilities, including locked rungs.
-
-The result is a collaboration where the learner controls escalation and the agent cannot even discover a stronger intervention early.
+- The page sends ChatGPT the graph, draft proposals, parked ideas, links, conflicts, fragile paths, coverage gaps, and app protocol.
+- ChatGPT acts through constrained graph operations instead of free-form advice.
+- The graph makes “do nothing / keep current route” a first-class option, not an unstated default.
+- The user decides what becomes accepted reasoning in the browser.
+- The parking lot keeps rejected/deferred ideas retrievable, reducing duplicate agent work.
+- The visible graph shows hidden dependencies, unsupported assumptions, and stale parked concerns.
 
 ## Tool surface
 
-| Tool | Tier | What it cannot do |
-| --- | ---: | --- |
-| `get_problem` | 0 | Cannot reveal a solution |
-| `get_work` | 0 | Cannot rewrite learner steps |
-| `get_focus` | 0 | Cannot infer an unfocused answer |
-| `get_stuck_signal` | 0 | Cannot diagnose the learner |
-| `ask_question` | 0 | Questions only, ≤2 sentences, never answer-containing statements |
-| `place_flag` | 0 | Wordless marker only |
-| `award_check` | 0 | Cannot certify undefended reasoning |
-| `give_analogy` | 1 | Must use a different but structurally similar problem; no actual solution |
-| `give_nudge` | 2 | One category-level sentence; never the concrete move |
-| `reveal_next_step` | 3 | One next step only; never a full solution |
+| Tool | What it does |
+| --- | --- |
+| `get_riskframe_context` | Reads the app protocol so connected ChatGPT knows to use the open WebMCP page as the live test surface |
+| `initialize_decision_graph` | Atomically initializes the visible graph from a validated decision snapshot with `change_path` and `status_quo` options |
+| `get_reasoning_graph` | Reads graph state, coverage, source references, markers, and protocol metadata |
+| `get_pending_proposals` | Reads visible draft cards and proposed links |
+| `get_parking_lot` | Reads parked reasoning for retrieval and conflict checks |
+| `propose_card` | Adds a draft card with role, epistemic status, basis, and source references |
+| `propose_link` | Adds a draft typed relationship between existing cards |
+| `flag_conflict` | Marks a conflict between current and parked reasoning |
+| `flag_fragile_path` | Marks a weak dependency path in the decision graph |
 
 ## Run locally
 
@@ -40,24 +42,26 @@ The app is a static Vite site and can be deployed to Netlify, Vercel, or any sta
 
 ## Enable WebMCP
 
-ChatGPT’s in-app browser supports WebMCP out of the box. In Chrome, enable `chrome://flags/#enable-webmcp-testing` (Chrome 149+) and relaunch. Without WebMCP, Rubber Duck stays fully usable and shows a setup banner explaining the missing capability.
+ChatGPT’s in-app browser supports WebMCP when the selected model and account support site tools. In Chrome, enable `chrome://flags/#enable-webmcp-testing` (Chrome 149+) and relaunch. Without WebMCP, Riskframe stays usable and shows a setup banner explaining the missing capability.
 
 ## Judge runbook
 
-1. Open the app and use the seeded **Two Sum** canvas.
-2. Add two or three reasoning steps; edit and reorder them.
-3. Confirm the sidebar shows Tier 0 tools and **3 hint tokens**.
-4. Spend one token. `give_analogy` should animate into the live tool surface while the counter drops to 2.
-5. In a WebMCP-capable browser, inspect the registered tools in DevTools’ WebMCP panel and call them. Every result uses `{ content: [{ type: "text", text }] }`.
-6. Spend the remaining tokens to reveal the nudge and one-next-step rungs. A full solution is never exposed.
+1. Open the app in ChatGPT’s in-app browser with a WebMCP-capable model.
+2. In ChatGPT, ask the agent to map a messy decision, such as: “Should we pivot this project or keep refining it?”
+3. Use WebMCP to call `get_riskframe_context`, then `initialize_decision_graph` with at least one `change_path` option and one `status_quo` option.
+4. Use WebMCP to call `get_reasoning_graph`, then `propose_card` or `flag_fragile_path`.
+5. Confirm the proposed card appears as a draft object on the canvas.
+6. Park a proposal and confirm it remains in the parking lot.
+7. Use `flag_conflict` to connect accepted reasoning with a parked concern.
+8. Confirm every tool result uses `{ content: [{ type: "text", text }] }`.
 
 ## Screenshots and demo
 
-<!-- Placeholder: add a desktop screenshot of the study desk. -->
-![Study desk screenshot](docs/assets/rubber-duck-desktop.png)
+<!-- Placeholder: add a desktop screenshot of the reasoning canvas. -->
+![Riskframe canvas screenshot](docs/assets/signal-loom-desktop.png)
 
-<!-- Placeholder: add a short GIF showing a token spend and tool registration animation. -->
-![Hint ladder demo](docs/assets/rubber-duck-hint-ladder.gif)
+<!-- Placeholder: add a short GIF showing a draft proposal moving into the parking lot. -->
+![Riskframe draft proposal demo](docs/assets/signal-loom-ghost-layer.gif)
 
 ## License
 

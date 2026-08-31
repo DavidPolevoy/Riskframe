@@ -1,20 +1,100 @@
-export type StepStatus = 'draft' | 'flagged' | 'checked';
+import type {
+  DecisionFrame,
+  DecisionGraphSnapshot,
+  EpistemicStatus,
+  OptionPath,
+  RelationshipType,
+  SemanticRole,
+  SourceRef,
+} from '../domain/decisionGraph';
 
-export interface RubricMilestone { id: string; label: string; }
-export interface Problem { id: string; title: string; difficulty: string; statement: string; milestones: RubricMilestone[]; }
-export interface StepBlock { id: string; text: string; status: StepStatus; lastEditedAt: number; editCount: number; }
-export interface Annotation { id: string; stepId: string; kind: 'question' | 'flag'; text: string; createdAt: number; }
-export interface Telemetry { stepId: string | null; idleSeconds: number; rewriteCount: number; isBacktracking: boolean; }
-export interface AppState { problem: Problem; steps: StepBlock[]; focusId: string | null; annotations: Annotation[]; hintTokens: number; unlockedTier: number; telemetry: Record<string, Telemetry>; visitedStepIds: string[]; }
+export type DecisionLens = 'personal' | 'startup' | 'engineering';
+export type CardType = SemanticRole | 'decision';
+export type ReviewStatus = 'accepted' | 'draft' | 'parked' | 'rejected';
+export type LinkType = RelationshipType;
+
+export interface ReasoningCard {
+  id: string;
+  role: CardType;
+  title: string;
+  body: string;
+  reviewStatus: ReviewStatus;
+  epistemicStatus: EpistemicStatus;
+  basis: string;
+  sourceRefIds: string[];
+  optionPath?: OptionPath;
+  x: number;
+  y: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface ReasoningLink {
+  id: string;
+  sourceId: string;
+  targetId: string;
+  type: LinkType;
+  reason: string;
+  reviewStatus: 'accepted' | 'draft';
+}
+
+export interface AnalysisMarker {
+  id: string;
+  sourceId: string;
+  targetId?: string;
+  cardIds?: string[];
+  reason: string;
+  createdAt: number;
+}
+
+export interface CoverageItem {
+  optionId: string;
+  optionPath?: OptionPath;
+  missing: Array<'consequence' | 'risk' | 'mitigation' | 'tripwire' | 'support'>;
+}
+
+export interface GraphCoverage {
+  options: CoverageItem[];
+  unknownCount: number;
+}
+
+export interface AppState {
+  schemaVersion: 1;
+  decision: DecisionFrame | null;
+  lens: DecisionLens;
+  cards: ReasoningCard[];
+  links: ReasoningLink[];
+  proposals: ReasoningCard[];
+  proposedLinks: ReasoningLink[];
+  parkingLot: ReasoningCard[];
+  rejected: ReasoningCard[];
+  sourceRefs: SourceRef[];
+  conflicts: AnalysisMarker[];
+  fragilePaths: AnalysisMarker[];
+  summary: string;
+  selectedCardId: string | null;
+}
 
 export type Action =
-  | { type: 'addStep' }
-  | { type: 'updateStep'; stepId: string; text: string }
-  | { type: 'deleteStep'; stepId: string }
-  | { type: 'moveStep'; stepId: string; direction: 'up' | 'down' }
-  | { type: 'setFocus'; stepId: string | null }
-  | { type: 'spendHint' }
-  | { type: 'resetSession' }
-  | { type: 'askQuestion'; stepId: string; text: string }
-  | { type: 'placeFlag'; stepId: string }
-  | { type: 'awardCheck'; stepId: string };
+  | { type: 'initializeDecisionGraph'; snapshot: DecisionGraphSnapshot }
+  | { type: 'updateDecision'; text: string }
+  | { type: 'setLens'; lens: DecisionLens }
+  | { type: 'selectCard'; cardId: string | null }
+  | { type: 'acceptProposal'; proposalId: string }
+  | { type: 'parkProposal'; proposalId: string }
+  | { type: 'rejectProposal'; proposalId: string }
+  | { type: 'promoteParked'; cardId: string }
+  | {
+      type: 'proposeCard';
+      role: SemanticRole;
+      title: string;
+      body: string;
+      epistemicStatus: EpistemicStatus;
+      basis: string;
+      sourceRefIds: string[];
+      optionPath?: OptionPath;
+    }
+  | { type: 'proposeLink'; sourceId: string; targetId: string; linkType: LinkType; reason: string }
+  | { type: 'flagConflict'; sourceId: string; targetId: string; reason: string }
+  | { type: 'flagFragilePath'; cardIds: string[]; reason: string }
+  | { type: 'resetSession' };

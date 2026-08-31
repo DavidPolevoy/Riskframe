@@ -2,7 +2,7 @@
 
 ## Problem
 
-Signal Loom currently creates hard-coded “continue” and “pivot” proposals when a decision starts. Those proposals are unrelated to many user decisions. The graph also conflates a node’s role, its truth status, and the user’s review status. Arbitrary confidence values and unconstrained summaries make model-authored prose look more grounded than it is.
+Riskframe currently creates hard-coded “continue” and “pivot” proposals when a decision starts. Those proposals are unrelated to many user decisions. The graph also conflates a node’s role, its truth status, and the user’s review status. Arbitrary confidence values and unconstrained summaries make model-authored prose look more grounded than it is.
 
 The application must instead let the connected ChatGPT construct the entire initial decision graph from the current conversation. Missing information must remain visible as unknown rather than forcing an intake interview or being silently invented.
 
@@ -35,8 +35,8 @@ The initialization flow is:
 1. The user expresses a decision in the ChatGPT conversation.
 2. ChatGPT infers the frame, options, criteria, constraints, consequences, risks, claims, and unknowns.
 3. ChatGPT calls `initialize_decision_graph` once with a complete snapshot.
-4. Signal Loom validates the snapshot without mutating state.
-5. Signal Loom atomically renders the snapshot as a draft graph.
+4. Riskframe validates the snapshot without mutating state.
+5. Riskframe atomically renders the snapshot as a draft graph.
 6. Existing proposal-review interactions let the user accept, park, or reject inferred material.
 
 ## Payload Contract

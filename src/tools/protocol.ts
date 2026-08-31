@@ -1,0 +1,24 @@
+export const riskframeProtocol = {
+  app: 'Riskframe',
+  purpose: 'WebMCP-native visual decision graph',
+  toolSurface: 'v2',
+  preferredWorkflow: [
+    'fetch WebMCP tools from this page before live app testing',
+    'call get_riskframe_context before deciding how to use the page',
+    'call initialize_decision_graph for new decisions',
+    'call get_reasoning_graph after mutations',
+    'verify live app state through WebMCP before claiming behavior',
+  ],
+  agentRules: [
+    'Treat this open page as the source of truth for live Riskframe testing.',
+    'Do not create decision options inside the browser app.',
+    'Every initialized graph must compare at least one change_path option against at least one status_quo option.',
+    'For each option, expose risk management: downside risk plus mitigation, tripwire, or unknown dependency.',
+    'Visualize the risk of going forward with the proposed path and the risk of keeping the regular path.',
+    'Do not use start_decision; it is obsolete.',
+    'Do not use numeric confidence.',
+    'Represent missing information as unknown nodes.',
+    'Keep role, epistemic status, and review status separate.',
+  ],
+  storageKey: 'signal-loom-state-v2',
+} as const;
