@@ -38,7 +38,13 @@ pnpm install
 pnpm dev
 ```
 
-The app is a static Vite site and can be deployed to Netlify, Vercel, or any static host.
+## Live demo
+
+Riskframe is deployed on ChatGPT Sites:
+
+https://riskframe.davidpolevoy96.chatgpt.site
+
+The app is a static Vite site with a lightweight Sites worker entry for production hosting.
 
 ## Enable WebMCP
 
@@ -46,7 +52,7 @@ ChatGPT’s in-app browser supports WebMCP when the selected model and account s
 
 ## Judge runbook
 
-1. Open the app in ChatGPT’s in-app browser with a WebMCP-capable model.
+1. Open the live demo in ChatGPT’s in-app browser with a WebMCP-capable model.
 2. In ChatGPT, ask the agent to map a messy decision, such as: “Should we pivot this project or keep refining it?”
 3. Use WebMCP to call `get_riskframe_context`, then `initialize_decision_graph` with at least one `change_path` option and one `status_quo` option.
 4. Use WebMCP to call `get_reasoning_graph`, then `propose_card` or `flag_fragile_path`.
