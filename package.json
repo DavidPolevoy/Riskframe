@@ -16,11 +16,12 @@
     "vite": "latest"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
+    "@openai/sites-vite-plugin": "^0.2.0",
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@testing-library/user-event": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
     "jsdom": "latest",
     "typescript": "latest",
     "vitest": "latest"
