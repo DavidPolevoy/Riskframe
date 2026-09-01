@@ -15,7 +15,7 @@ writeFileSync(
     if (request.method !== 'GET' && request.method !== 'HEAD') return assetResponse;
 
     const url = new URL(request.url);
-    return env.ASSETS.fetch(new Request(new URL('/', url), request));
+    return env.ASSETS.fetch(new Request(new URL('/index.html', url), request));
   },
 };
 `,
