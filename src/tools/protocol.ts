@@ -19,7 +19,7 @@ export const riskframeProtocol = {
     'Do not use numeric confidence.',
     'Represent missing information as unknown nodes.',
     'Keep role, epistemic status, and review status separate.',
-    'Treat each page open as an isolated volatile session; never assume data carries across browser clients.',
+    'Treat browser storage as client-local only; never assume decision data travels between users, browsers, or devices.',
   ],
-  sessionPersistence: 'none',
+  sessionPersistence: 'browser_local_storage_only',
 } as const;

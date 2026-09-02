@@ -8,19 +8,23 @@ describe('state storage', () => {
     localStorage.clear();
   });
 
-  it('does not load browser storage into a new Riskframe session', () => {
+  it('loads schema-aware Riskframe state from this browser only', () => {
     const fallback = createInitialState();
+    localStorage.setItem('signal-loom-state-v1', JSON.stringify({ cards: [{ id: 'legacy' }], proposals: [] }));
+
+    expect(loadState(fallback)).toBe(fallback);
+
     const state = reducer(createInitialState(), { type: 'initializeDecisionGraph', snapshot: validSnapshot });
     localStorage.setItem(storageKey, JSON.stringify(state));
 
-    expect(loadState(fallback)).toBe(fallback);
+    expect(loadState(fallback)).toEqual(state);
   });
 
-  it('does not persist session state to browser storage', () => {
+  it('saves state under the browser-local storage key', () => {
     const state = reducer(createInitialState(), { type: 'initializeDecisionGraph', snapshot: validSnapshot });
 
     saveState(state);
 
-    expect(localStorage.getItem(storageKey)).toBeNull();
+    expect(JSON.parse(localStorage.getItem(storageKey) ?? 'null')).toEqual(state);
   });
 });
