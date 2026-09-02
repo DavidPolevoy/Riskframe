@@ -2,7 +2,6 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { createInitialState, reducer } from '../state/reducer';
-import { storageKey } from '../state/storage';
 import { validSnapshot } from './decisionGraphFixtures';
 
 function seededDecisionState() {
@@ -52,9 +51,7 @@ describe('Riskframe app shell', () => {
   });
 
   it('renders draft proposals after ChatGPT initializes a decision graph through WebMCP', () => {
-    localStorage.setItem(storageKey, JSON.stringify(seededDecisionState()));
-
-    render(<App />);
+    render(<App initialState={seededDecisionState()} />);
 
     expect(screen.getByText(/reasoning canvas/i)).toBeInTheDocument();
     expect(
@@ -92,9 +89,8 @@ describe('Riskframe app shell', () => {
 
   it('renders a draggable infinite-style canvas with zoom controls', async () => {
     const user = (await import('@testing-library/user-event')).default.setup();
-    localStorage.setItem(storageKey, JSON.stringify(seededDecisionState()));
 
-    render(<App />);
+    render(<App initialState={seededDecisionState()} />);
 
     expect(screen.getByTestId('reasoning-viewport')).toHaveAttribute('data-board-width', '3200');
     expect(screen.getByTestId('reasoning-viewport')).toHaveAttribute('data-board-height', '2200');
@@ -113,9 +109,7 @@ describe('Riskframe app shell', () => {
   });
 
   it('pans the canvas by dragging the board instead of using scrollbars', () => {
-    localStorage.setItem(storageKey, JSON.stringify(seededDecisionState()));
-
-    render(<App />);
+    render(<App initialState={seededDecisionState()} />);
 
     const viewport = screen.getByTestId('reasoning-viewport');
     fireEvent.pointerDown(viewport, { clientX: 120, clientY: 140, pointerId: 1 });
@@ -128,9 +122,7 @@ describe('Riskframe app shell', () => {
   });
 
   it('zooms the canvas with the scroll wheel', () => {
-    localStorage.setItem(storageKey, JSON.stringify(seededDecisionState()));
-
-    render(<App />);
+    render(<App initialState={seededDecisionState()} />);
 
     const viewport = screen.getByTestId('reasoning-viewport');
     fireEvent.wheel(viewport, { deltaY: -100 });
@@ -150,9 +142,8 @@ describe('Riskframe app shell', () => {
 
   it('uses a non-passive wheel listener so scratchboard zoom blocks page scroll', () => {
     const addEventListener = vi.spyOn(HTMLElement.prototype, 'addEventListener');
-    localStorage.setItem(storageKey, JSON.stringify(seededDecisionState()));
 
-    render(<App />);
+    render(<App initialState={seededDecisionState()} />);
 
     expect(addEventListener).toHaveBeenCalledWith(
       'wheel',
@@ -163,9 +154,8 @@ describe('Riskframe app shell', () => {
 
   it('parks declined proposals for later retrieval', async () => {
     const user = (await import('@testing-library/user-event')).default.setup();
-    localStorage.setItem(storageKey, JSON.stringify(seededDecisionState()));
 
-    render(<App />);
+    render(<App initialState={seededDecisionState()} />);
 
     await user.click(screen.getAllByRole('button', { name: /park/i })[0]);
 

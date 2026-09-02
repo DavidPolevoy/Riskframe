@@ -4,6 +4,7 @@ import { AgentSidebar } from './components/AgentSidebar';
 import { ReasoningCanvas } from './components/ReasoningCanvas';
 import { SetupBanner } from './components/SetupBanner';
 import { demoDecisionGraph } from './data/demoDecisionGraph';
+import type { AppState } from './data/types';
 import { attachHandlers, createToolHandlers } from './tools/runtime';
 import { TOOL_DEFINITIONS } from './tools/definitions';
 import { useTool } from './tools/useTool';
@@ -45,6 +46,6 @@ function Desk() {
   );
 }
 
-export default function App() {
-  return <AppProvider><Desk /></AppProvider>;
+export default function App({ initialState }: { initialState?: AppState }) {
+  return <AppProvider initialState={initialState}><Desk /></AppProvider>;
 }

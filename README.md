@@ -6,6 +6,8 @@ Riskframe is a WebMCP Challenge entry for people who need to see the structure a
 
 The important part: agent output is visual and reversible. Proposed cards stay as draft objects until the user accepts, parks, or rejects them. Parked ideas remain visible in a side lot and can be promoted later when new reasoning makes them relevant again.
 
+Each page open starts a fresh, isolated browser session. Riskframe does not persist decision graphs to browser storage or share board state across clients.
+
 ## Why WebMCP is the point, not the plumbing
 
 Chat alone can summarize a decision. Riskframe uses WebMCP to maintain a shared spatial reasoning model that chat normally flattens:
